@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Card Calc</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--tx:#14181f;--mu:#667085;--bd:#e2e5ea;--ac:#0f766e;--ac2:#7cc9be;--acbg:#e6f4f1;--bad:#b42318;--good:#067647;--badbg:#fde2e0;box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1318;--card:#181e26;--tx:#eef1f5;--mu:#98a2b3;--bd:#2a323d;--ac:#2dd4bf;--ac2:#1d7f73;--acbg:#12312d;--bad:#f97066;--good:#47cd89;--badbg:#3b1b19}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-top:env(safe-area-inset-top,0px)}
+#app{max-width:640px;margin:0 auto;padding:0 14px 110px}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 0 10px;gap:8px}
+header b{font-size:19px}
+.mn{display:flex;align-items:center;gap:4px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:2px}
+.mn span{min-width:112px;text-align:center;font-weight:600;font-size:13px}
+.mn button{border:0;background:transparent;color:var(--tx);font-size:20px;width:34px;height:34px;border-radius:10px;cursor:pointer}
+h2{font-size:14px;margin:0 0 8px}h2.sec{margin:14px 2px 8px;color:var(--mu);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:12px}
+.hero{background:var(--acbg);border-color:transparent}
+.hero small,.st small,label,.leg,.note{color:var(--mu);font-size:11px}
+.net{font-size:30px;font-weight:700;color:var(--ac);font-variant-numeric:tabular-nums}
+.net em{font-size:13px;font-style:normal;color:var(--mu);font-weight:500}
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;font-variant-numeric:tabular-nums}.st small{display:block}
+.u{padding:8px 0;border-top:1px solid var(--bd)}.u:first-of-type{border-top:0}
+.ut{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}.ut span{color:var(--mu)}
+.us{display:flex;justify-content:space-between;font-size:11px;color:var(--mu);margin-top:3px}
+.bar{height:7px;background:var(--bd);border-radius:5px;overflow:hidden;display:flex;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--ac)}.bar i.n{background:var(--ac2)}.bar.over i{background:var(--bad)}
+.bad{color:var(--bad);font-weight:600}.pos{color:var(--good)}
+.leg{margin-top:6px}.leg s{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 8px;vertical-align:-1px;text-decoration:none}.leg s:first-child{margin-left:0}
+details>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:8px;align-items:center}
+details>summary::-webkit-details-marker{display:none}
+details>summary::after{content:"\25BE";color:var(--mu)}details[open]>summary::after{content:"\25B4"}
+details[open]>summary{margin-bottom:6px}.sum{color:var(--mu);font-size:12px;margin-left:auto}
+input,select{width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:9px 10px}
+input:focus,select:focus{outline:2px solid var(--ac)}
+input[type=checkbox]{width:20px;height:20px;padding:0}
+label{display:block;margin:8px 0 3px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.three{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:6px;align-items:center}
+.row{display:flex;gap:8px;align-items:center;margin-bottom:6px}.row .grow{flex:1}.row .w{width:96px}
+.btn{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:10px 12px;cursor:pointer}
+.btn.pri{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+@media (prefers-color-scheme:dark){.btn.pri,.fab{color:#06201c!important}}
+.btn.del{color:var(--bad)}.btn.full{width:100%}.btn.sm{padding:7px 10px}
+.acts{display:flex;gap:8px;margin-top:12px}.acts .btn{flex:1}
+.t{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--bd);cursor:pointer}
+.t small{display:block;color:var(--mu)}.t .r{text-align:right;font-variant-numeric:tabular-nums}
+.dh{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin:12px 2px 4px;display:flex;justify-content:space-between}
+.empty{text-align:center;color:var(--mu);padding:22px 10px}
+.hm{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-top:1px solid var(--bd);cursor:pointer;font-variant-numeric:tabular-nums}
+.hm small{display:block;color:var(--mu)}.hm .r{text-align:right}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);z-index:20}
+.ni{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;height:58px}
+.ni button{border:0;background:transparent;color:var(--mu);font:inherit;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;height:100%}
+.ni button span{font-size:18px}.ni button.on{color:var(--ac);font-weight:600}
+.fab{width:52px!important;height:52px!important;border-radius:50%!important;background:var(--ac)!important;color:#fff!important;font-size:28px!important;justify-content:center;margin:0 auto;transform:translateY(-12px);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);width:100%;max-width:640px;border-radius:18px 18px 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));max-height:92vh;overflow-y:auto}
+.sh{display:flex;justify-content:space-between;align-items:center;font-size:16px}
+.x{border:0;background:transparent;color:var(--mu);font-size:20px;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:20px;padding:7px 13px;cursor:pointer}
+.chip.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
+@media (prefers-color-scheme:dark){.chip.on{color:#06201c}}
+#amt{font-size:26px;font-weight:700;padding:12px}
+.pv{background:var(--acbg);border-radius:10px;padding:9px 10px;margin-top:10px;font-size:12px}
+#toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#101828;color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:40}
+#toast.on{opacity:1}
+.alt{background:var(--badbg);color:var(--bad);border-radius:8px;padding:6px 8px;font-size:12px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal"></div>
+<div id="toast"></div>
+<input type="file" id="imp" accept="application/json,.json" hidden>
+<script>
+"use strict";
+const KEY="cardcalc3";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);
+const pad=n=>String(n).padStart(2,"0");
+const todayStr=()=>{const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())};
+const mk=d=>String(d).slice(0,7);
+const mlabel=k=>{const p=k.split("-");return new Date(+p[0],+p[1]-1,1).toLocaleDateString("en-GB",{month:"long",year:"numeric"})};
+const shift=(k,n)=>{const p=k.split("-").map(Number);const d=new Date(p[0],p[1]-1+n,1);return d.getFullYear()+"-"+pad(d.getMonth()+1)};
+const n2=v=>(+v||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const n0=v=>(+v||0).toLocaleString("en-US",{maximumFractionDigits:0});
+const dlabel=d=>{const p=d.split("-");return new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})};
+
+function defaults(){
+ const m=todayStr().slice(0,7);
+ return {v:3,cur:"AED",cbDefault:10,capcb:false,
+  cats:[{id:"dine",name:"Dine",rate:3.25},{id:"grocery",name:"Grocery",rate:2.5},{id:"fuel",name:"Fuel",rate:3.25},{id:"travel",name:"Travel",rate:4}],
+  cards:[
+   {id:"c1",name:"Shivangi",caps:{dine:7500,grocery:7500,fuel:2500,travel:0},cbs:{}},
+   {id:"c2",name:"Chiranjeet",caps:{dine:7500,grocery:7500,fuel:2500,travel:0},cbs:{}}],
+  tx:[],
+  open:{[m]:{c1:{dine:7498,grocery:7499,fuel:2497},c2:{dine:7498,grocery:7499,fuel:2200}}}};
+}
+function load(){try{const x=localStorage.getItem(KEY);if(x){const p=JSON.parse(x);if(p&&p.cards&&p.cats&&p.tx){p.open=p.open||{};return p}}}catch(e){}return defaults()}
+let S=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast("Could not save: browser storage is blocked")}}
+let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),1800)}
+
+const V={tab:"home",month:todayStr().slice(0,7),fc:"",fk:"",form:null,op:{}};
+const cardName=id=>{const c=S.cards.find(z=>z.id===id);return c?c.name:"?"};
+const catName=id=>{const c=S.cats.find(z=>z.id===id);return c?c.name:"?"};
+
+/* ---------- core calculation ---------- */
+function calc(key,txs){
+ txs=(txs||S.tx).filter(t=>mk(t.date)===key).slice().sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0));
+ const o=S.open[key]||{};
+ const R={cards:{},cats:{},t:{spend:0,cost:0,cb:0},tx:{},n:txs.length};
+ S.cats.forEach(k=>R.cats[k.id]={cap:0,open:0,spend:0,cost:0,cb:0});
+ S.cards.forEach(c=>{
+  const rc={cats:{},spend:0,cost:0,cb:0,cap:0,open:0};R.cards[c.id]=rc;
+  S.cats.forEach(k=>{
+   const op=+((o[c.id]||{})[k.id])||0,cap=+c.caps[k.id]||0;
+   rc.cats[k.id]={cap:cap,open:op,spend:0,cost:0,cb:0};
+   const a=R.cats[k.id];a.cap+=cap;a.open+=op;rc.cap+=cap;rc.open+=op;
+  });
+ });
+ txs.forEach(t=>{
+  const rc=R.cards[t.card],k=S.cats.find(z=>z.id===t.cat),c=S.cards.find(z=>z.id===t.card);
+  if(!rc||!k||!c)return;
+  const x=rc.cats[t.cat],rem=x.cap-x.open-x.spend;
+  const el=(S.capcb&&x.cap>0)?Math.max(0,Math.min(t.amt,rem)):t.amt;
+  const cbp=(c.cbs[t.cat]!=null?+c.cbs[t.cat]:S.cbDefault)/100;
+  const cost=t.amt*k.rate/100,cb=el*cbp;
+  x.spend+=t.amt;x.cost+=cost;x.cb+=cb;
+  const a=R.cats[t.cat];a.spend+=t.amt;a.cost+=cost;a.cb+=cb;
+  rc.spend+=t.amt;rc.cost+=cost;rc.cb+=cb;
+  R.t.spend+=t.amt;R.t.cost+=cost;R.t.cb+=cb;R.tx[t.id]={cost:cost,cb:cb};
+ });
+ return R;
+}
+
+/* ---------- views ---------- */
+function ur(label,open,spend,cap){
+ const used=open+spend,left=cap-used;let bar="";
+ if(cap>0){
+  const w1=Math.max(0,Math.min(100,open/cap*100)),w2=Math.max(0,Math.min(100-w1,spend/cap*100));
+  bar=`<div class="bar${left<0?" over":""}"><i style="width:${w1}%"></i><i class="n" style="width:${w2}%"></i></div>
+  <div class="us"><span class="${left<0?"bad":""}">${left<0?"Over cap by "+n0(-left):"Left "+n0(left)}</span><span>${Math.round(used/cap*100)}%</span></div>`;
+ }
+ return `<div class="u"><div class="ut"><b>${esc(label)}</b><span>${n0(used)} / ${cap>0?n0(cap):"no cap"}</span></div>${bar}</div>`;
+}
+function home(){
+ const R=calc(V.month),net=R.t.cb-R.t.cost;
+ return `<div class="card hero"><small>Net gain, ${esc(mlabel(V.month))} (cashback - cost)</small>
+ <div class="net" style="${net<0?"color:var(--bad)":""}">${n2(net)} <em>${esc(S.cur)}</em></div>
+ <div class="st"><div><small>Spend logged</small><b>${n2(R.t.spend)}</b></div><div><small>Cost</small><b>${n2(R.t.cost)}</b></div><div><small>Cashback</small><b>${n2(R.t.cb)}</b></div></div></div>
+ <div class="card"><h2>Cap vs usage, all cards</h2>
+ ${S.cats.map(k=>{const a=R.cats[k.id];return ur(k.name,a.open,a.spend,a.cap)}).join("")||'<div class="empty">Add categories in Setup</div>'}
+ <div class="leg"><s style="background:var(--ac)"></s>Opening used<s style="background:var(--ac2)"></s>Logged here<s style="background:var(--bad)"></s>Over cap</div></div>
+ <h2 class="sec">Per card</h2>
+ ${S.cards.map(c=>{const rc=R.cards[c.id],n=rc.cb-rc.cost;
+  return `<details class="card" data-k="${c.id}" ${V.op[c.id]?"open":""}><summary><b>${esc(c.name)}</b><span class="sum">${n0(rc.open+rc.spend)} / ${n0(rc.cap)} &middot; Net <b class="${n<0?"bad":"pos"}">${n2(n)}</b></span></summary>
+  ${S.cats.map(k=>{const x=rc.cats[k.id];return ur(k.name,x.open,x.spend,x.cap)}).join("")}</details>`}).join("")}
+ ${R.n===0?'<div class="empty">No transactions in this month yet. Tap + to add one.</div>':""}`;
+}
+function txs(){
+ const R=calc(V.month);
+ const list=S.tx.filter(t=>mk(t.date)===V.month&&(!V.fc||t.card===V.fc)&&(!V.fk||t.cat===V.fk))
+  .sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:(b.ts||0)-(a.ts||0));
+ let sp=0,cb=0,cs=0;list.forEach(t=>{sp+=t.amt;const r=R.tx[t.id];if(r){cb+=r.cb;cs+=r.cost}});
+ let body="",last="";
+ list.forEach(t=>{
+  if(t.date!==last){last=t.date;body+=`<div class="dh"><span>${esc(dlabel(t.date))}</span></div>`}
+  const r=R.tx[t.id]||{cb:0};
+  body+=`<div class="t" data-a="edit" data-id="${t.id}"><div><b>${esc(catName(t.cat))}</b><small>${esc(cardName(t.card))}${t.note?" &middot; "+esc(t.note):""}</small></div><div class="r"><b>${n2(t.amt)}</b><small>CB ${n2(r.cb)}</small></div></div>`;
+ });
+ return `<div class="card"><div class="two">
+  <div><label>Card</label><select data-f2="fc"><option value="">All cards</option>${S.cards.map(c=>`<option value="${c.id}" ${V.fc===c.id?"selected":""}>${esc(c.name)}</option>`).join("")}</select></div>
+  <div><label>Category</label><select data-f2="fk"><option value="">All categories</option>${S.cats.map(c=>`<option value="${c.id}" ${V.fk===c.id?"selected":""}>${esc(c.name)}</option>`).join("")}</select></div></div>
+  <div class="st"><div><small>${list.length} transactions</small><b>${n2(sp)}</b></div><div><small>Cost</small><b>${n2(cs)}</b></div><div><small>Cashback</small><b>${n2(cb)}</b></div></div></div>
+  ${list.length?`<div class="card" style="padding-top:2px">${body}</div>`:'<div class="empty">Nothing here. Tap + to add a transaction.</div>'}`;
+}
+function hist(){
+ const keys=new Set([todayStr().slice(0,7)]);S.tx.forEach(t=>keys.add(mk(t.date)));Object.keys(S.open).forEach(k=>keys.add(k));
+ const arr=Array.from(keys).sort().reverse();
+ let A={spend:0,cost:0,cb:0};
+ const rows=arr.map(k=>{const R=calc(k),n=R.t.cb-R.t.cost;A.spend+=R.t.spend;A.cost+=R.t.cost;A.cb+=R.t.cb;
+  return `<div class="hm" data-a="openmonth" data-m="${k}"><div><b>${esc(mlabel(k))}</b><small>${R.n} transactions &middot; spend ${n2(R.t.spend)}</small></div><div class="r"><b class="${n<0?"bad":"pos"}">${n2(n)}</b><small>CB ${n2(R.t.cb)} &middot; cost ${n2(R.t.cost)}</small></div></div>`}).join("");
+ const net=A.cb-A.cost;
+ return `<div class="card hero"><small>All time net gain</small><div class="net" style="${net<0?"color:var(--bad)":""}">${n2(net)} <em>${esc(S.cur)}</em></div>
+  <div class="st"><div><small>Spend</small><b>${n2(A.spend)}</b></div><div><small>Cost</small><b>${n2(A.cost)}</b></div><div><small>Cashback</small><b>${n2(A.cb)}</b></div></div></div>
+  <div class="card" style="padding-top:2px">${rows}</div>
+  <button class="btn full" data-a="csv">Download all transactions (CSV)</button>`;
+}
+function setup(){
+ const mo=S.open[V.month]||{};
+ return `<div class="card"><h2>Categories and cost rates</h2><div class="note" style="margin-bottom:8px">Cost = amount x rate. This is the cost to you on each category.</div>
+ ${S.cats.map(k=>`<div class="row"><input class="grow" value="${esc(k.name)}" data-s="kname" data-id="${k.id}"><input class="w" type="number" step="0.01" inputmode="decimal" value="${k.rate}" data-s="krate" data-id="${k.id}"><button class="btn del sm" data-a="delcat" data-id="${k.id}">&times;</button></div>`).join("")}
+ <button class="btn sm" data-a="addcat">+ Add category</button></div>
+
+ <div class="card"><h2>Cashback</h2>
+ <div class="two"><div><label>Default cashback %</label><input type="number" step="0.01" inputmode="decimal" value="${S.cbDefault}" data-s="cb"></div>
+ <div><label>Currency label</label><input value="${esc(S.cur)}" data-s="cur"></div></div>
+ <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:13px;color:var(--tx)"><input type="checkbox" data-s="capcb" ${S.capcb?"checked":""}> Count cashback only up to the remaining cap</label></div>
+
+ <h2 class="sec">Cards: cap and cashback % per category</h2>
+ ${S.cards.map(c=>`<div class="card"><div class="row"><input class="grow" style="font-weight:700" value="${esc(c.name)}" data-s="cname" data-id="${c.id}"><button class="btn del sm" data-a="delcard" data-id="${c.id}">Remove</button></div>
+  <div class="three"><span></span><label style="margin:0">Cap</label><label style="margin:0">Cashback %</label></div>
+  ${S.cats.map(k=>`<div class="three" style="margin-top:6px"><b>${esc(k.name)}</b>
+   <input type="number" inputmode="decimal" value="${c.caps[k.id]||0}" data-s="cap" data-card="${c.id}" data-cat="${k.id}">
+   <input type="number" step="0.01" inputmode="decimal" placeholder="${S.cbDefault}" value="${c.cbs[k.id]==null?"":c.cbs[k.id]}" data-s="cbc" data-card="${c.id}" data-cat="${k.id}"></div>`).join("")}
+  <div class="note" style="margin-top:6px">Blank cashback % uses the default.</div></div>`).join("")}
+ <button class="btn full" data-a="addcard" style="margin-bottom:12px">+ Add card</button>
+
+ <div class="card"><h2>Opening used, ${esc(mlabel(V.month))}</h2><div class="note" style="margin-bottom:6px">Amount already used on each cap before you start logging in this month. Leave 0 if you log everything here.</div>
+ ${S.cards.map(c=>`<div style="margin-top:8px"><b>${esc(c.name)}</b>${S.cats.map(k=>`<div class="three" style="margin-top:5px"><span>${esc(k.name)}</span><input type="number" inputmode="decimal" value="${(mo[c.id]||{})[k.id]||0}" data-s="open" data-card="${c.id}" data-cat="${k.id}"><span></span></div>`).join("")}</div>`).join("")}</div>
+
+ <div class="card"><h2>Data</h2><div class="note" style="margin-bottom:8px">Everything is stored in this browser on this device. Download a backup now and then, and use it to move to another phone.</div>
+ <div class="acts" style="margin-top:0"><button class="btn" data-a="json">Backup (JSON)</button><button class="btn" data-a="import">Restore</button></div>
+ <div class="acts"><button class="btn" data-a="csv">Export CSV</button><button class="btn del" data-a="reset">Erase all</button></div></div>`;
+}
+function render(){
+ const y=window.scrollY;
+ const showMn=V.tab!=="hist";
+ const tabs=[["home","&#127968;","Home"],["tx","&#129534;","Txns"],null,["hist","&#128197;","History"],["set","&#9881;&#65039;","Setup"]];
+ $("#app").innerHTML=`<header><b>Card Calc</b>${showMn?`<div class="mn"><button data-a="pm" aria-label="Previous month">&#8249;</button><span>${esc(mlabel(V.month))}</span><button data-a="nm" aria-label="Next month">&#8250;</button></div>`:""}</header>
+ <main>${V.tab==="home"?home():V.tab==="tx"?txs():V.tab==="hist"?hist():setup()}</main>
+ <nav><div class="ni">${tabs.map(t=>t?`<button data-a="tab" data-t="${t[0]}" class="${V.tab===t[0]?"on":""}"><span>${t[1]}</span>${t[2]}</button>`:`<button class="fab" data-a="add" aria-label="Add transaction">+</button>`).join("")}</div></nav>`;
+ window.scrollTo(0,y);
+}
+
+/* ---------- add / edit sheet ---------- */
+function openForm(id){
+ if(!S.cards.length||!S.cats.length){toast("Add a card and a category in Setup first");return}
+ if(id){const t=S.tx.find(z=>z.id===id);if(!t)return;V.form={id:t.id,date:t.date,card:t.card,cat:t.cat,amt:String(t.amt),note:t.note||""}}
+ else{
+  const td=todayStr();
+  V.form={id:null,date:mk(td)===V.month?td:V.month+"-01",card:V.lastCard&&S.cards.some(c=>c.id===V.lastCard)?V.lastCard:S.cards[0].id,cat:V.lastCat&&S.cats.some(c=>c.id===V.lastCat)?V.lastCat:S.cats[0].id,amt:"",note:""};
+ }
+ renderModal();setTimeout(()=>{const a=$("#amt");if(a&&!id)a.focus()},50);
+}
+function renderModal(){
+ const f=V.form;if(!f){$("#modal").innerHTML="";return}
+ $("#modal").innerHTML=`<div class="ov" data-a="ovbg"><div class="sheet">
+ <div class="sh"><b>${f.id?"Edit transaction":"Add transaction"}</b><button class="x" data-a="close" aria-label="Close">&#10005;</button></div>
+ <label>Amount, ${esc(S.cur)} (negative for a refund)</label>
+ <input id="amt" type="number" inputmode="decimal" step="0.01" placeholder="0.00" value="${esc(f.amt)}" data-f="amt">
+ <label>Category</label><div class="chips">${S.cats.map(k=>`<button class="chip ${f.cat===k.id?"on":""}" data-a="pickcat" data-id="${k.id}">${esc(k.name)}</button>`).join("")}</div>
+ <label>Card</label><div class="chips">${S.cards.map(c=>`<button class="chip ${f.card===c.id?"on":""}" data-a="pickcard" data-id="${c.id}">${esc(c.name)}</button>`).join("")}</div>
+ <div class="two"><div><label>Date</label><input type="date" value="${esc(f.date)}" data-f="date"></div><div><label>Note</label><input type="text" value="${esc(f.note)}" placeholder="optional" data-f="note"></div></div>
+ <div class="pv" id="pv"></div>
+ <div class="acts">${f.id?`<button class="btn del" data-a="del" data-id="${f.id}">Delete</button>`:`<button class="btn" data-a="saveadd">Save + add more</button>`}<button class="btn pri" data-a="save">Save</button></div>
+ </div></div>`;
+ updatePv();
+}
+function updatePv(){
+ const f=V.form,el=$("#pv");if(!f||!el)return;
+ const amt=+f.amt;
+ if(!amt||!f.date){el.textContent="Enter an amount to see cost, cashback and cap left.";return}
+ const tmp={id:"__tmp",date:f.date,card:f.card,cat:f.cat,amt:amt,ts:9e15};
+ const R=calc(mk(f.date),S.tx.filter(t=>t.id!==f.id).concat([tmp]));
+ const x=R.cards[f.card]&&R.cards[f.card].cats[f.cat],t=R.tx.__tmp;
+ if(!x||!t){el.textContent="";return}
+ const left=x.cap-x.open-x.spend;
+ el.innerHTML=`Cost <b>${n2(t.cost)}</b> &middot; Cashback <b>${n2(t.cb)}</b> &middot; `+(x.cap>0?(left<0?`<span class="bad">over cap by ${n0(-left)}</span>`:`cap left after this <b>${n0(left)}</b>`):"no cap set");
+}
+function saveForm(again){
+ const f=V.form,amt=+f.amt;
+ if(!amt){toast("Enter an amount");return}
+ if(!f.date){toast("Pick a date");return}
+ if(f.id){const t=S.tx.find(z=>z.id===f.id);if(t)Object.assign(t,{date:f.date,card:f.card,cat:f.cat,amt:amt,note:f.note.trim()})}
+ else S.tx.push({id:uid(),date:f.date,card:f.card,cat:f.cat,amt:amt,note:f.note.trim(),ts:Date.now()});
+ V.lastCard=f.card;V.lastCat=f.cat;V.month=mk(f.date);save();
+ if(again){V.form={id:null,date:f.date,card:f.card,cat:f.cat,amt:"",note:""};renderModal();const a=$("#amt");if(a)a.focus()}
+ else{V.form=null;renderModal()}
+ toast("Saved");render();
+}
+
+/* ---------- export / import ---------- */
+function download(name,text,mime){const b=new Blob([text],{type:mime}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function csvCell(v){let s=String(v==null?"":v);if(/^[=+\-@]/.test(s)&&isNaN(+s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
+function exportCsv(){
+ const rows=[["Date","Card","Category","Amount","Note","Cost","Cashback"]],cache={};
+ S.tx.slice().sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)).forEach(t=>{
+  const k=mk(t.date);cache[k]=cache[k]||calc(k);const r=cache[k].tx[t.id]||{cost:0,cb:0};
+  rows.push([t.date,cardName(t.card),catName(t.cat),t.amt,t.note||"",r.cost.toFixed(2),r.cb.toFixed(2)]);
+ });
+ download("card-transactions.csv",rows.map(r=>r.map(csvCell).join(",")).join("\n"),"text/csv");
+}
+$("#imp").onchange=e=>{
+ const file=e.target.files[0];if(!file)return;
+ const rd=new FileReader();
+ rd.onload=()=>{try{
+  const p=JSON.parse(rd.result);
+  if(!p||!Array.isArray(p.cards)||!Array.isArray(p.cats)||!Array.isArray(p.tx))throw new Error("bad");
+  if(!confirm("Replace all current data with this backup?"))return;
+  p.cats=p.cats.map(k=>({id:String(k.id),name:String(k.name),rate:+k.rate||0}));
+  p.cards=p.cards.map(c=>({id:String(c.id),name:String(c.name),caps:c.caps||{},cbs:c.cbs||{}}));
+  p.tx=p.tx.filter(t=>t&&typeof t.date==="string"&&+t.amt).map(t=>({id:String(t.id||uid()),date:t.date,card:String(t.card),cat:String(t.cat),amt:+t.amt,note:String(t.note||""),ts:+t.ts||0}));
+  p.open=p.open||{};p.cbDefault=+p.cbDefault||0;p.cur=String(p.cur||"AED");p.capcb=!!p.capcb;
+  S=p;save();render();toast("Backup restored");
+ }catch(x){toast("Not a valid backup file")}};
+ rd.readAsText(file);e.target.value="";
+};
+
+/* ---------- events ---------- */
+document.addEventListener("click",e=>{
+ const el=e.target.closest("[data-a]");if(!el)return;
+ const a=el.dataset.a,id=el.dataset.id;
+ if(a==="ovbg"){if(e.target===el){V.form=null;renderModal()}return}
+ switch(a){
+  case"pm":V.month=shift(V.month,-1);render();break;
+  case"nm":V.month=shift(V.month,1);render();break;
+  case"tab":V.tab=el.dataset.t;render();window.scrollTo(0,0);break;
+  case"add":openForm(null);break;
+  case"edit":openForm(id);break;
+  case"close":V.form=null;renderModal();break;
+  case"pickcat":V.form.cat=id;renderModal();break;
+  case"pickcard":V.form.card=id;renderModal();break;
+  case"save":saveForm(false);break;
+  case"saveadd":saveForm(true);break;
+  case"del":if(confirm("Delete this transaction?")){S.tx=S.tx.filter(t=>t.id!==id);save();V.form=null;renderModal();render();toast("Deleted")}break;
+  case"openmonth":V.month=el.dataset.m;V.tab="home";render();window.scrollTo(0,0);break;
+  case"addcard":{const c={id:uid(),name:"Card "+(S.cards.length+1),caps:{},cbs:{}};S.cats.forEach(k=>c.caps[k.id]=0);S.cards.push(c);save();render();break}
+  case"delcard":{const n=S.tx.filter(t=>t.card===id).length;if(confirm("Remove this card"+(n?" and its "+n+" transactions":"")+"?")){S.cards=S.cards.filter(c=>c.id!==id);S.tx=S.tx.filter(t=>t.card!==id);save();render()}break}
+  case"addcat":{const k={id:uid(),name:"New category",rate:0};S.cats.push(k);S.cards.forEach(c=>c.caps[k.id]=0);save();render();break}
+  case"delcat":{const n=S.tx.filter(t=>t.cat===id).length;if(confirm("Remove this category"+(n?" and its "+n+" transactions":"")+"?")){S.cats=S.cats.filter(k=>k.id!==id);S.tx=S.tx.filter(t=>t.cat!==id);save();render()}break}
+  case"csv":exportCsv();break;
+  case"json":download("card-calc-backup-"+todayStr()+".json",JSON.stringify(S,null,1),"application/json");break;
+  case"import":$("#imp").click();break;
+  case"reset":if(confirm("Erase ALL data on this device? This cannot be undone.")&&confirm("Really erase everything? Download a backup first if unsure.")){S=defaults();S.tx=[];save();render();toast("Erased")}break;
+ }
+});
+document.addEventListener("input",e=>{
+ const d=e.target.dataset;if(!d.f||!V.form)return;
+ V.form[d.f]=e.target.value;updatePv();
+});
+document.addEventListener("change",e=>{
+ const el=e.target,d=el.dataset,v=el.value;
+ if(d.f2){V[d.f2]=v;render();return}
+ if(d.f){V.form[d.f]=v;updatePv();return}
+ if(!d.s)return;
+ const card=S.cards.find(c=>c.id===(d.card||d.id)),cat=S.cats.find(k=>k.id===d.id);
+ switch(d.s){
+  case"cb":S.cbDefault=+v||0;break;
+  case"capcb":S.capcb=el.checked;break;
+  case"cur":S.cur=v.trim()||"AED";break;
+  case"kname":if(cat)cat.name=v.trim()||"Category";break;
+  case"krate":if(cat)cat.rate=+v||0;break;
+  case"cname":{const c=S.cards.find(z=>z.id===d.id);if(c)c.name=v.trim()||"Card";break}
+  case"cap":if(card)card.caps[d.cat]=+v||0;break;
+  case"cbc":if(card){if(v==="")delete card.cbs[d.cat];else card.cbs[d.cat]=+v||0}break;
+  case"open":{const m=V.month;S.open[m]=S.open[m]||{};S.open[m][d.card]=S.open[m][d.card]||{};S.open[m][d.card][d.cat]=+v||0;break}
+ }
+ save();render();
+});
+document.addEventListener("toggle",e=>{const k=e.target.dataset&&e.target.dataset.k;if(k)V.op[k]=e.target.open},true);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&V.form){V.form=null;renderModal()}});
+render();
+</script>
+</body>
+</html>
